@@ -51,7 +51,7 @@ export default function Login() {
     return (
         <Layout>
 
-            <section className="text-gray-600 body-font relative h-screen">
+            <section className="text-gray-600 body-font relative min-h-screen">
                 <div className="absolute inset-0 bg-gray-300">
                 </div>
 
@@ -63,7 +63,7 @@ export default function Login() {
                         <div className="text-center">
                             <Image alt="" src={"/logo-bookandlink-1.png"} width={0}
                                 height={0} sizes="80vw"
-                                style={{ width: '60%', height: 'auto', margin : '0 auto' }} /> 
+                                style={{ width: '200px', height: 'auto', margin : '0 auto' }} /> 
                         </div>
 
                         <form onSubmit={loginAction} className="mt-4">
@@ -82,7 +82,7 @@ export default function Login() {
                             </div>
 
                             <div className="py-2 text-right mb-2">
-                                <a href="" className="font-semibold text-blue-600">Forgot Password?</a>
+                                <Link href={"/auth/forgot-password"} className="font-semibold text-blue-600">Forgot Password?</Link>
                             </div>
 
                             <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded text-lg flex items-center space-x-2" type="submit">

@@ -46,14 +46,14 @@ export default function Register() {
             }
         } catch (error) {
             setLoading(false);
-            setMessage("Unable to login")
+            setMessage("Unable to register")
         }
     }
 
     return (
         <Layout>
 
-            <section className="text-gray-600 body-font relative h-screen">
+            <section className="text-gray-600 body-font relative min-h-screen">
                 <div className="absolute inset-0 bg-gray-300">
                 </div>
 
