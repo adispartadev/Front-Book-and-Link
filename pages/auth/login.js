@@ -6,17 +6,17 @@ import Image from 'next/image'
 import Link from "next/link";
 import { useState } from "react"
 
+
 export default function Login() {
 
     const [formData, setFormData] = useState({
-        email : '',
-        password : ''
+        email   : '',
+        password: ''
     });
 
     const [validationError, setValidationError] = useState({});
-
-    const [loading, setLoading]     = useState(false);
-    const [message, setMessage]         = useState(null);
+    const [loading, setLoading]                 = useState(false);
+    const [message, setMessage]                 = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,6 +27,8 @@ export default function Login() {
     }
 
     const loginAction = async (e) => {
+
+
         e.preventDefault();
         setLoading(true);
 
@@ -36,7 +38,9 @@ export default function Login() {
             setLoading(false);
 
             if(result.status == 'success') {
-
+                localStorage.setItem("user-token", result.data.token);
+                localStorage.setItem("user-data", JSON.stringify(result.data.user));
+			    window.location.replace("/")
             } else {
                 setMessage(result.message);
                 setValidationError(result.data);
