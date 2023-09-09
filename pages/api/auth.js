@@ -1,4 +1,3 @@
-import { verify } from "jsonwebtoken";
 import axios from "@/utils/axios";
 
 export async function isAuthenticated(req) {
