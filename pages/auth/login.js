@@ -13,10 +13,10 @@ export default function Login() {
         password : ''
     });
 
+    const [validationError, setValidationError] = useState({});
+
     const [loading, setLoading]     = useState(false);
     const [message, setMessage]         = useState(null);
-    const [messagetype, setMessagetype] = useState(null);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,12 +38,11 @@ export default function Login() {
             if(result.status == 'success') {
 
             } else {
-                setMessagetype("error");
                 setMessage(result.message);
+                setValidationError(result.data);
             }
         } catch (error) {
             setLoading(false);
-            setMessagetype("error")
             setMessage("Unable to login")
         }
     }
@@ -68,17 +67,20 @@ export default function Login() {
 
                         <form onSubmit={loginAction} className="mt-4">
 
-                            {messagetype == 'error' ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                 <span className="font-medium">Warning!</span> {message}
                             </div> : ""}
 
                             <div className="relative mb-4">
                                 <label className="leading-7 text-sm text-gray-600">Email</label>
                                 <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
                             </div>
+
                             <div className="relative mb-4">
                                 <label className="leading-7 text-sm text-gray-600">Password</label>
                                 <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
                             </div>
 
                             <div className="py-2 text-right mb-2">

@@ -16,9 +16,10 @@ export default function Register() {
 
     });
 
-    const [loading, setLoading]         = useState(false);
-    const [message, setMessage]         = useState(null);
-    const [isSuccess, setIsSuccess]     = useState(false);
+    const [loading, setLoading]                 = useState(false);
+    const [message, setMessage]                 = useState(null);
+    const [isSuccess, setIsSuccess]             = useState(false);
+    const [validationError, setValidationError] = useState({});
 
 
     const handleChange = (e) => {
@@ -43,6 +44,7 @@ export default function Register() {
                 setIsSuccess(true);
             } else {
                 setMessage(result.message);
+                setValidationError(result.data);
             }
         } catch (error) {
             setLoading(false);
@@ -62,18 +64,18 @@ export default function Register() {
 
                         { loading ? <LoadingBlock></LoadingBlock> : ""}
 
-                        <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Register</h2>
-                        <p class="leading-relaxed mb-5 text-gray-600">Fill following form to register a user</p>
+                        <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">Register</h2>
+                        <p className="leading-relaxed mb-5 text-gray-600">Fill following form to register a user</p>
 
                         { isSuccess ? 
 
-                            <div class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                                <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                                 </svg>
-                                <span class="sr-only">Info</span>
+                                <span className="sr-only">Info</span>
                                 <div>
-                                    <span class="font-medium">Register Successfully!</span> Thankyou <strong>{formData.full_name}</strong>, your account successfully registered. Please <Link href={"/auth/login"}><span className="font-semibold text-blue-600">Login</span></Link> to continue.
+                                    <span className="font-medium">Register Successfully!</span> Thankyou <strong>{formData.full_name}</strong>, your account successfully registered. Please <Link href={"/auth/login"}><span className="font-semibold text-blue-600">Login</span></Link> to continue.
                                 </div>
                             </div>
 
@@ -89,41 +91,38 @@ export default function Register() {
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Full Name</label>
                                     <input type="text" value={formData.full_name} onChange={handleChange} name="full_name" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                    { validationError?.full_name != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.full_name}</div> : "" }
                                 </div>
 
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Email</label>
                                     <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                    { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
                                 </div>
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Password</label>
                                     <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                    { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
                                 </div>
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Confirm Password</label>
                                     <input type="password" value={formData.password_confirm} onChange={handleChange} name="password_confirm" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                    { validationError?.password_confirm != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> : "" }
                                 </div>
-
                                 
                                 <div className="flex">
 
                                     <div className="py-2 mt-1">
                                         Have you registered? <Link href={"/auth/login"}><span className="font-semibold text-blue-600">Login</span></Link>
                                     </div>
-                                    <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded text-lg flex items-center space-x-2 ml-auto" type="submit">
+                                    <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded flex items-center space-x-2 ml-auto" type="submit">
                                         <span>Register</span>
-                                        
-                                       
                                     </button>
 
                                 </div>
                             </form>
 
                         }
-                        
-
-                        
-
                         
 
                     </div>

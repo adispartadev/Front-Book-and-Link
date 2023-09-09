@@ -4,12 +4,17 @@ import axios from "@/utils/axios";
 
 import Image from 'next/image'
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react"
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
+
+    const router          = useRouter();
+    const { token }       = router.query;
 
     const [formData, setFormData] = useState({
-        email : '',
+        password        : '',
+        password_confirm: '',
     });
 
     const [validationError, setValidationError] = useState({});
@@ -31,8 +36,9 @@ export default function ForgotPassword() {
         setLoading(true);
 
         try {
-            const response = await axios.post('/api/forgot-password', formData);
-            const result = response.data;
+            formData.token = token;
+            const response = await axios.post('/api/reset-password', formData);
+            const result   = response.data;
             setLoading(false);
 
             if(result.status == 'success') {
@@ -54,6 +60,7 @@ export default function ForgotPassword() {
                 <div className="absolute inset-0 bg-gray-300">
                 </div>
 
+
                 <div className="container px-5 py-24 mx-auto flex">
                     <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex overflow-hidden flex-col mx-auto w-full mt-10 relative z-10 shadow-md">
                         
@@ -66,15 +73,16 @@ export default function ForgotPassword() {
                         </div>
 
 
+
                         { isSuccess ? 
 
-                            <div className="flex items-center p-4 text-sm mt-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                            <div className="flex items-center p-4 mb-4 text-sm mt-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
                                 <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                                 </svg>
                                 <span className="sr-only">Info</span>
                                 <div>
-                                    We have sent an email with instructions for changing your password to <strong>{formData.email}</strong>. Please check in your mail inbox or spam folder.
+                                    Your password successfully updated. Please <Link href={"/auth/login"}><span className="font-semibold text-blue-600">Login</span></Link> to continue.
                                 </div>
                             </div>
 
@@ -87,7 +95,7 @@ export default function ForgotPassword() {
                                     </svg>
                                     <span className="sr-only">Info</span>
                                     <div>
-                                        <span className="font-medium">Instruction!</span> Enter your email in form below, we will send your password recovery page by email.
+                                        <span className="font-medium">Instruction!</span> Enter your new password
                                     </div>
                                 </div>
                                 
@@ -99,12 +107,19 @@ export default function ForgotPassword() {
                                     </div> : ""}
 
                                     <div className="relative mb-4">
-                                        <label className="leading-7 text-sm text-gray-600">Email</label>
-                                        <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                        { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
+                                        <label className="leading-7 text-sm text-gray-600">Password</label>
+                                        <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                        { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
                                     </div>
                                 
-                                    <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded flex items-center space-x-2" type="submit">
+                                    <div className="relative mb-4">
+                                        <label className="leading-7 text-sm text-gray-600">Confirm password</label>
+                                        <input type="password" value={formData.password_confirm} onChange={handleChange} name="password_confirm" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+                                        { validationError?.password_confirm != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> : "" }
+                                    </div>
+                                
+
+                                    <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded items-center w-full" type="submit">
                                         <span>Reset Password</span>
                                     </button>
 
