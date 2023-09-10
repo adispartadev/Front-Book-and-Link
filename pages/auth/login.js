@@ -39,6 +39,7 @@ export default function Login() {
 
             if(result.status == 'success') {
                 localStorage.setItem("user-token", result.data.token);
+                localStorage.setItem("user-refresh-token", result.data.refresh_token);
                 localStorage.setItem("user-data", JSON.stringify(result.data.user));
 			    window.location.replace("/")
             } else {
