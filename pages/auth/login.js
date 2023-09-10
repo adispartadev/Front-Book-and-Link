@@ -5,9 +5,14 @@ import axios from "@/utils/axios";
 import Image from 'next/image'
 import Link from "next/link";
 import { useState } from "react"
+import { useUser } from '../../app/context/userContext';
+import { useRouter } from "next/router";
 
 
 export default function Login() {
+
+    const router = useRouter();
+    const { userState, dispatch } = useUser();
 
     const [formData, setFormData] = useState({
         email   : '',
@@ -26,6 +31,7 @@ export default function Login() {
         }));
     }
 
+
     const loginAction = async (e) => {
 
 
@@ -41,7 +47,8 @@ export default function Login() {
                 localStorage.setItem("user-token", result.data.token);
                 localStorage.setItem("user-refresh-token", result.data.refresh_token);
                 localStorage.setItem("user-data", JSON.stringify(result.data.user));
-			    window.location.replace("/")
+                dispatch({ type: 'SET_USER', payload: result.data.user });
+			    router.push('/home');
             } else {
                 setMessage(result.message);
                 setValidationError(result.data);
@@ -75,6 +82,7 @@ export default function Login() {
                             {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                 <span className="font-medium">Warning!</span> {message}
                             </div> : ""}
+
 
                             <div className="relative mb-4">
                                 <label className="leading-7 text-sm text-gray-600">Email</label>

@@ -4,8 +4,12 @@ import { Inter } from 'next/font/google'
 import axios from "@/utils/axios";
 const inter = Inter({ subsets: ['latin'] })
 import Head from 'next/head'
+import { useUser } from '../app/context/userContext';
+import { useRouter } from 'next/router';
 
 export default function MainLayout({ children }) {
+    const { userState, dispatch } = useUser();
+    const router = useRouter();
 
 
     const logout = async () => {
@@ -22,7 +26,8 @@ export default function MainLayout({ children }) {
             if(result.status == 'success') {
                 localStorage.removeItem("user-token");
                 localStorage.removeItem("user-refresh-token");
-			    window.location.replace("/auth/login")
+                dispatch({ type: 'CLEAR_USER'});
+			    router.replace('/auth/login');
             } else {
                 alert("Unable to logout");
             }
@@ -38,21 +43,28 @@ export default function MainLayout({ children }) {
                 <title>Book and Link</title>
                 <meta name='description' content='SSO Coding Test' />
             </Head>
-			<nav className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-				<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-					<span className="flex items-center">
-						<span className="self-center text-2xl font-semibold whitespace-nowrap ">Dashboard</span>
-					</span>
-					
-					<div className="w-auto" id="navbar-solid-bg">
-						<ul className="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent ">
-							<li>
-								<button onClick={logout} className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Logout</button>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+
+            <nav className="bg-white border-gray-200 dark:bg-gray-900">
+                <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
+                    <div className="flex items-center">
+                        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Dashboard</span>
+                    </div>
+                    <div className="flex items-center">
+                        {
+                            userState.user ? (
+                                <>
+                                    <div className="mr-6 text-sm  text-gray-500 dark:text-white hover:underline">{userState.user.full_name}</div>
+                                    <button className="text-sm  text-blue-600  hover:underline" onClick={logout}>Logout</button>
+                                </>
+                            ) : ""
+                            
+                        }
+                        
+                    </div>
+                </div>
+            </nav>
+
+			
             {children}
         </div>
     )
