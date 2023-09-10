@@ -3,7 +3,7 @@ import '../app/globals.css'
 import { Inter } from 'next/font/google'
 import axios from "@/utils/axios";
 const inter = Inter({ subsets: ['latin'] })
-
+import Head from 'next/head'
 
 export default function MainLayout({ children }) {
 
@@ -34,6 +34,10 @@ export default function MainLayout({ children }) {
 
     return (
         <div className='text-gray-600 body-font relative min-h-screen'>
+			<Head>
+                <title>Book and Link</title>
+                <meta name='description' content='SSO Coding Test' />
+            </Head>
 			<nav className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
 				<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 					<span className="flex items-center">
