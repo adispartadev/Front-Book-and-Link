@@ -7,6 +7,7 @@ import axios from "@/utils/axios";
 import MainLayout from '@/components/mainLayout';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { getProductDetail } from '@/app/action';
 
 
 export default function Home() {
@@ -25,33 +26,22 @@ export default function Home() {
 		if(isLogin) {
 			loadingProduct()
 		} else {
-			window.location.replace("/auth/login")
+            router.push('/auth/login');
 		}
 	}
 
 	async function loadingProduct()  {
         var productId = id;
-        try {
-            const response = await axios.get('/api/product/' + productId, {
-                headers : {
-                    'Authorization': 'Bearer ' + userToken(),
-                }
-            });
-            
-            const result = response.data;
-            setLoading(false);
+		setLoading(true)
+		const response = await getProductDetail(productId);
+		setLoading(false)
+        const result   = response?.data;
 
-            if(result.status == 'success') {
-                setProduct(result.data)
-                console.log(result.data)
-            } else {
-                setMessage(result.message);
-            }
-        } catch (error) {
-            setLoading(false);
-            setMessage("Unable to fetch product")
+		if(result?.status == 'success') {
+			setProduct(result.data)
+		} else {
+            setMessage(result?.message || "Unable to fetch product")
         }
-        
 	}
 
 

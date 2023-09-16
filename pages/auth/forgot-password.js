@@ -1,3 +1,4 @@
+import { forgotAction } from "@/app/action";
 import Layout from "@/components/layout"
 import LoadingBlock from "@/components/loadingBlock";
 import axios from "@/utils/axios";
@@ -29,21 +30,17 @@ export default function ForgotPassword() {
     const loginAction = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setMessage(null);
 
-        try {
-            const response = await axios.post('/api/forgot-password', formData);
-            const result = response.data;
-            setLoading(false);
+        const response = await forgotAction(formData)
+        setLoading(false);
+        const result   = response?.data;
 
-            if(result.status == 'success') {
-                setIsSuccess(true)
-            } else {
-                setMessage(result.message);
-                setValidationError(result.data);
-            }
-        } catch (error) {
-            setLoading(false);
-            setMessage("Unable to process")
+        if(result?.status == 'success') {
+            setIsSuccess(true);
+        } else {
+            setMessage(result?.message || "Unable to register");
+            setValidationError(result?.data);
         }
     }
 
@@ -57,7 +54,7 @@ export default function ForgotPassword() {
                 <div className="container px-5 py-24 mx-auto flex">
                     <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex overflow-hidden flex-col mx-auto w-full mt-10 relative z-10 shadow-md">
                         
-                        { loading ? <LoadingBlock></LoadingBlock> : ""}
+                        { loading && <LoadingBlock></LoadingBlock>}
 
                         <div className="text-center">
                             <Image alt="" src={"/logo-bookandlink-1.png"} width={0}
@@ -94,14 +91,14 @@ export default function ForgotPassword() {
 
                                 <form onSubmit={loginAction}>
 
-                                    {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    {message != null && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                         <span className="font-medium">Warning!</span> {message}
-                                    </div> : ""}
+                                    </div> }
 
                                     <div className="relative mb-4">
                                         <label className="leading-7 text-sm text-gray-600">Email</label>
                                         <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                        { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
+                                        { validationError?.email != null && <div className="text-xs text-red-700 mt-0.5">{validationError.email}</div> }
                                     </div>
                                 
                                     <button className="text-white bg-blue-500 border-0 py-2 px-6 rounded flex items-center space-x-2" type="submit">

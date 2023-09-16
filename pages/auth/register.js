@@ -1,3 +1,4 @@
+import { registerAction } from "@/app/action";
 import Layout from "@/components/layout"
 import LoadingBlock from "@/components/loadingBlock";
 import axios from "@/utils/axios";
@@ -30,26 +31,22 @@ export default function Register() {
         }));
     }
 
-    const loginAction = async (e) => {
+    const submitRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage(null);
 
-        try {
-            const response = await axios.post('/api/register', formData);
-            const result = response.data;
-            setLoading(false);
+        const response = await registerAction(formData)
+        setLoading(false);
+        const result   = response?.data;
 
-            if(result.status == 'success') {
-                setIsSuccess(true);
-            } else {
-                setMessage(result.message);
-                setValidationError(result.data);
-            }
-        } catch (error) {
-            setLoading(false);
-            setMessage("Unable to register")
+        if(result?.status == 'success') {
+            setIsSuccess(true);
+        } else {
+            setMessage(result?.message || "Unable to register");
+            setValidationError(result?.data);
         }
+
     }
 
     return (
@@ -62,7 +59,7 @@ export default function Register() {
                 <div className="container px-5 py-24 mx-auto flex">
                     <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex overflow-hidden flex-col mx-auto w-full mt-10 relative z-10 shadow-md">
 
-                        { loading ? <LoadingBlock></LoadingBlock> : ""}
+                        { loading && <LoadingBlock></LoadingBlock>}
 
                         <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">Register</h2>
                         <p className="leading-relaxed mb-5 text-gray-600">Fill following form to register a user</p>
@@ -81,33 +78,33 @@ export default function Register() {
 
                             :
 
-                            <form autoComplete="off" onSubmit={loginAction} className="mt-4">
+                            <form autoComplete="off" onSubmit={submitRegister} className="mt-4">
 
-                                {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                {message != null && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                     <span className="font-medium">Warning!</span> {message}
-                                </div> : ""}
+                                </div> }
 
 
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Full Name</label>
                                     <input type="text" value={formData.full_name} onChange={handleChange} name="full_name" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                    { validationError?.full_name != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.full_name}</div> : "" }
+                                    { validationError?.full_name != null && <div className="text-xs text-red-700 mt-0.5">{validationError.full_name}</div> }
                                 </div>
 
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Email</label>
                                     <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                    { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
+                                    { validationError?.email != null && <div className="text-xs text-red-700 mt-0.5">{validationError.email}</div> }
                                 </div>
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Password</label>
                                     <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                    { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
+                                    { validationError?.password != null && <div className="text-xs text-red-700 mt-0.5">{validationError.password}</div> }
                                 </div>
                                 <div className="relative mb-4">
                                     <label className="leading-7 text-sm text-gray-600">Confirm Password</label>
                                     <input type="password" value={formData.password_confirm} onChange={handleChange} name="password_confirm" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                    { validationError?.password_confirm != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> : "" }
+                                    { validationError?.password_confirm != null && <div className="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> }
                                 </div>
                                 
                                 <div className="flex">

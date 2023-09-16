@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react"
 import { useUser } from '../../app/context/userContext';
 import { useRouter } from "next/router";
-
+import { loginAction } from "@/app/action";
 
 export default function Login() {
 
@@ -32,31 +32,26 @@ export default function Login() {
     }
 
 
-    const loginAction = async (e) => {
-
+    const submitLogin = async (e) => {
 
         e.preventDefault();
         setLoading(true);
+        const response = await loginAction(formData)
+        setLoading(false);
+        const result   = response?.data;
 
-        try {
-            const response = await axios.post('/api/login', formData);
-            const result = response.data;
-            setLoading(false);
-
-            if(result.status == 'success') {
-                localStorage.setItem("user-token", result.data.token);
-                localStorage.setItem("user-refresh-token", result.data.refresh_token);
-                localStorage.setItem("user-data", JSON.stringify(result.data.user));
-                dispatch({ type: 'SET_USER', payload: result.data.user });
-			    router.push('/home');
-            } else {
-                setMessage(result.message);
-                setValidationError(result.data);
-            }
-        } catch (error) {
-            setLoading(false);
-            setMessage("Unable to login")
+        if(result?.status == 'success') {
+            localStorage.setItem("user-token", result.data.token);
+            localStorage.setItem("user-refresh-token", result.data.refresh_token);
+            localStorage.setItem("user-data", JSON.stringify(result.data.user));
+            dispatch({ type: 'SET_USER', payload: result.data.user });
+            router.push('/home');
+        } else {
+            setMessage(result?.message || "Unable to login");
+            setValidationError(result?.data);
         }
+
+     
     }
 
     return (
@@ -69,7 +64,7 @@ export default function Login() {
                 <div className="container px-5 py-24 mx-auto flex">
                     <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md">
                         
-                        { loading ? <LoadingBlock></LoadingBlock> : ""}
+                        { loading && <LoadingBlock></LoadingBlock>}
 
                         <div className="text-center">
                             <Image alt="" src={"/logo-bookandlink-1.png"} width={0}
@@ -77,23 +72,23 @@ export default function Login() {
                                 style={{ width: '200px', height: 'auto', margin : '0 auto' }} /> 
                         </div>
 
-                        <form onSubmit={loginAction} className="mt-4">
+                        <form onSubmit={submitLogin} className="mt-4">
 
-                            {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            {message != null && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                 <span className="font-medium">Warning!</span> {message}
-                            </div> : ""}
+                            </div>}
 
 
                             <div className="relative mb-4">
                                 <label className="leading-7 text-sm text-gray-600">Email</label>
                                 <input type="email" value={formData.email} onChange={handleChange} name="email" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                { validationError?.email != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.email}</div> : "" }
+                                { validationError?.email != null && <div className="text-xs text-red-700 mt-0.5">{validationError.email}</div>}
                             </div>
 
                             <div className="relative mb-4">
                                 <label className="leading-7 text-sm text-gray-600">Password</label>
                                 <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
+                                { validationError?.password != null && <div className="text-xs text-red-700 mt-0.5">{validationError.password}</div>}
                             </div>
 
                             <div className="py-2 text-right mb-2">

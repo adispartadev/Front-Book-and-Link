@@ -64,7 +64,7 @@ export default function ResetPassword() {
                 <div className="container px-5 py-24 mx-auto flex">
                     <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex overflow-hidden flex-col mx-auto w-full mt-10 relative z-10 shadow-md">
                         
-                        { loading ? <LoadingBlock></LoadingBlock> : ""}
+                        { loading && <LoadingBlock></LoadingBlock>}
 
                         <div className="text-center">
                             <Image alt="" src={"/logo-bookandlink-1.png"} width={0}
@@ -102,20 +102,20 @@ export default function ResetPassword() {
 
                                 <form onSubmit={loginAction}>
 
-                                    {message != null ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    {message != null && <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                                         <span className="font-medium">Warning!</span> {message}
-                                    </div> : ""}
+                                    </div> }
 
                                     <div className="relative mb-4">
                                         <label className="leading-7 text-sm text-gray-600">Password</label>
                                         <input type="password" value={formData.password} onChange={handleChange} name="password" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                        { validationError?.password != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password}</div> : "" }
+                                        { validationError?.password != null && <div className="text-xs text-red-700 mt-0.5">{validationError.password}</div> }
                                     </div>
                                 
                                     <div className="relative mb-4">
                                         <label className="leading-7 text-sm text-gray-600">Confirm password</label>
                                         <input type="password" value={formData.password_confirm} onChange={handleChange} name="password_confirm" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
-                                        { validationError?.password_confirm != null ? <div class="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> : "" }
+                                        { validationError?.password_confirm != null && <div className="text-xs text-red-700 mt-0.5">{validationError.password_confirm}</div> }
                                     </div>
                                 
 

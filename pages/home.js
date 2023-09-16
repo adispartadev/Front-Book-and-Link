@@ -2,12 +2,14 @@ import Image from 'next/image'
 import { isAuthenticated, userToken } from './api/auth';
 import axios from "@/utils/axios";
 import MainLayout from '@/components/mainLayout';
+import { useRouter } from "next/router";
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { getProducts } from '@/app/action';
 
 export default function HomePage() {
-	
+    const router = useRouter();
 	const [productList, setProductList] = useState([]);
 	const [loading, setLoading]         = useState(true);
 	const [message, setMessage]         = useState(null);
@@ -21,30 +23,25 @@ export default function HomePage() {
 		if(isLogin) {
 			loadingProduct()
 		} else {
-			window.location.replace("/auth/login")
+            router.push('/auth/login');
 		}
 	}
 
-	async function loadingProduct()  {
-		try {
-            const response = await axios.get('/api/products', {
-				headers : {
-					'Authorization': 'Bearer ' + userToken(),
-				}
-			});
-			
-            const result = response.data;
-            setLoading(false);
+	const loadingProduct = async () => {
 
-            if(result.status == 'success') {
-				setProductList(result.data)
-            } else {
-                setMessage(result.message);
-            }
-        } catch (error) {
-            setLoading(false);
-            setMessage("Unable to fetch product")
+		setLoading(true)
+		const response = await getProducts();
+		setLoading(false)
+		
+        const result   = response?.data;
+
+		if(result?.status == 'success') {
+			setProductList(result.data)
+
+		} else {
+            setMessage(result?.message || "Unable to fetch product")
         }
+
 	}
 
 

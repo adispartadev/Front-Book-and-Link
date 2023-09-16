@@ -51,12 +51,12 @@ export default function MainLayout({ children }) {
                     </div>
                     <div className="flex items-center">
                         {
-                            userState.user ? (
+                            userState.user && (
                                 <>
                                     <div className="mr-6 text-sm  text-gray-500 dark:text-white hover:underline">{userState.user.full_name}</div>
                                     <button className="text-sm  text-blue-600  hover:underline" onClick={logout}>Logout</button>
                                 </>
-                            ) : ""
+                            ) 
                             
                         }
                         
